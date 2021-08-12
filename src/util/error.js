@@ -10,7 +10,7 @@ class NotFoundError extends Error {
     }
 }
 
-class ConfictError extends Error {
+class ConflictError extends Error {
     static status = 409;
     constructor({ message, data }) {
         super(message);
@@ -131,7 +131,7 @@ class UnauthorizedError extends Error {
 module.exports = {
     NotFoundError,
     BadRequestError,
-    ConfictError,
+    ConflictError,
     InternalServerError,
     UnauthorizedError,
     ForbiddenError,

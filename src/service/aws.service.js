@@ -4,6 +4,7 @@ const { LWA, AWS } = require("../config/aws.config");
 const awssdk = require("aws-sdk");
 const { ForbiddenError, InternalServerError } = require('../util/error');
 const RequestService = require("./request.service");
+const {SPAPIENDPOINT} = require("../constant/index");
 
 class AWSService{
 
