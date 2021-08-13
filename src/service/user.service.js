@@ -1,5 +1,5 @@
 const UserModel = require("../model/user.model");
-const { NotFoundError, ConflictError } = require("../util/error");
+const { NotFoundError, ConflictError, BadRequestError, ForbiddenError } = require("../util/error");
 
 class UserService {
     #id;
@@ -54,6 +54,18 @@ class UserService {
         }
         const user = new UserModel(payload);
         return user.save();
+    }
+
+    async login(payload){
+        const {password} = payload;
+        this.#user = await this.getUser();
+        if (!this.#user) {
+            throw new BadRequestError({ message: `The email address ${this.#email} is not associated with any account.` });
+        }
+        if (!this.#user.isActive) {
+            throw new ForbiddenError({ message: `Seller account has been deactivated ${this.#email}` });
+        }
+        return this.#user;
     }
 }
 

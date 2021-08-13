@@ -3,6 +3,7 @@ const route = express.Router({caseSensitive : true});
 const UserService = require("../service/user.service");
 const {InternalServerError} = require("../util/error");
 const { OKSuccess, CreatedSuccess } = require("../util/success");
+const passport = require("passport");
 
 route.post("/",async(req,res) => {
     try{
@@ -29,6 +30,19 @@ route.get("/:id",async(req,res) => {
     catch(err){
         res.status(err.status ? err.status : InternalServerError.status).send(err);
     }
+})
+
+route.post('/login',passport.authenticate('local',{session : false}), async(req,res) => {
+    const {body} = req;
+    const {email,password} = body;
+    console.log('req.user',req.user);
+    res.status(OKSuccess.status).send(new OKSuccess({
+        data : {
+            jwt : req.user.createLoginJWT()
+        }
+    }))
+},function(err) {
+    console.log('err',err);
 })
 
 module.exports = route;

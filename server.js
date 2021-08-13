@@ -6,6 +6,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const passport = require('passport');
 
 app.use(
     bodyParser.urlencoded({extended : true})
@@ -22,8 +23,10 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Expose-Headers", "X-Custom-header");
     next();
 });
+app.use(require("./src/util/passport").initialize());
 
 app.use("/api/user",require("./src/controller/user.controller"));
+// app.use(passport.session());
 
 app.listen(process.env.PORT,() => {
     console.log(`server running at port ${process.env.PORT}`);
