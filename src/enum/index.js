@@ -1,5 +1,7 @@
 const USERSTATUS = require('./user-status');
+const REGION = require('./region');
 
 module.exports = {
-    USERSTATUS
+    USERSTATUS,
+    REGION
 }

@@ -45,8 +45,9 @@ class RequestService {
                 }
             }
         }
+        console.log('body',this.#body);
 
-        return await new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             request(option, (error, response, body) => {
                 if (error) {
                     reject(new InternalServerError({ message: 'send http request error', data: error }));
