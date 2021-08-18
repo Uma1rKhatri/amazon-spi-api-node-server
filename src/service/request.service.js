@@ -1,20 +1,22 @@
 "use strict";
 const request = require('request');
 const { ForbiddenError, InternalServerError } = require('../util/error');
+const {Request} = require("node-fetch");
+const fetch = require("node-fetch");
+
 
 class RequestService {
+
     #method;
     #url;
-    #params;
     #body;
     #headers;
-    constructor({ method, url, params, body, headers }) {
+    constructor({ method, url, body, headers }) {
         if (!(method && url)) {
             throw new ForbiddenError({ message: 'You must pass method & url' });
         }
         this.#method = method;
         this.#url = url;
-        this.#params = params;
         this.#body = body;
         this.#headers = headers;
     }

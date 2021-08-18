@@ -26,11 +26,11 @@ app.use(function (req, res, next) {
 app.use(require("./src/util/passport").initialize());
 
 app.use("/api/user", require("./src/controller/user.controller"));
-app.use("/api/aws",require("./src/controller/aws.controller"));
+app.use("/api/aws", require("./src/controller/aws.controller"));
 
 // app.use(passport.session());
 
 app.listen(process.env.PORT, () => {
     console.log(`server running at port ${process.env.PORT}`);
 })
-require("./src/config/db.config");
+// require("./src/config/db.config");
