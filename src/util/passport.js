@@ -42,7 +42,26 @@ passport.use("region-authorization",new JWTStrategy({
         console.log('err', err);
         done(err);
     }
-}))
+}));
+
+passport.use("authenticate",new JWTStrategy({
+    jwtFromRequest : ExtractJwt.fromAuthHeaderAsBearerToken("state"),
+    secretOrKey : JWT.SESSION_SECRET
+}, (jwt_payload,done) => {
+    try{
+        console.log("inside jwt passport",jwt_payload);
+        const {data} = jwt_payload;
+        const {user} = data;
+        if(!user){
+            return done(new UnauthorizedError({ message: 'user id not found' }));
+        }
+        done(null,data);
+    }
+    catch(err){
+        console.log('err', err);
+        done(err);
+    }
+}));
 
 
 

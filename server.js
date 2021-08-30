@@ -28,6 +28,8 @@ app.use(require("./src/util/passport").initialize());
 app.use("/api/user", require("./src/controller/user.controller"));
 app.use("/api/aws", require("./src/controller/aws.controller"));
 app.use("/api/order",require("./src/controller/order.controller"));
+app.use("/api/inventory",require("./src/controller/inventory.controller"));
+
 
 // app.use(passport.session());
 

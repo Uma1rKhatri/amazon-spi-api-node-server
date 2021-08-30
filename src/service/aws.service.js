@@ -60,7 +60,7 @@ class AWSService {
         "content-type": "application/x-www-form-urlencoded",
       },
     }).sendHTTPRequest();
-    const result = JSON.parse(response);
+    const result = response;
     const {access_token} = result;
     if (!access_token) {
       throw new BadRequestError({ message: `can't get access token`, data : result });
@@ -84,7 +84,7 @@ class AWSService {
         "content-type": "application/x-www-form-urlencoded",
       },
     }).sendHTTPRequest();
-    const result = JSON.parse(response);
+    const result = response;
     const {refresh_token} = result;
     if (!refresh_token) {
       throw new BadRequestError({ message: `can't get refresh token`, data : result });

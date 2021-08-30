@@ -136,7 +136,11 @@ class AWSSignV4Service {
             queryParameters.forEach((value, key) => {
                 // console.log("key", key);
                 // console.log("value", value);
-                canonicalQueryString.append(encodeURI(key), encodeURI(value));
+                // canonicalQueryString.append(encodeURI(key), encodeURI(value));
+
+                // encoded the query key and values in sp-api service
+                canonicalQueryString.append(key, value);
+
             })
         }
         return canonicalQueryString.toString();

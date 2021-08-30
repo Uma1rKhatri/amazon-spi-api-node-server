@@ -59,7 +59,9 @@ const schema = new mongoose.Schema({
                 sellingPartnerId: { type: String },
             },
             refreshToken: { type: String },
-            isAuthorized: { type: Boolean, default: false }
+            isAuthorized: { type: Boolean, default: false },
+            // getMarketplaceParticipations of the user
+            marketplaces : []
         }
     ],
     isActive: {
