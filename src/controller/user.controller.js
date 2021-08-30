@@ -20,7 +20,7 @@ route.post("/", async (req, res) => {
     }
 })
 
-route.get("/:id", async (req, res) => {
+route.get("/:id",passport.authenticate('authenticate', { session: false }), async (req, res) => {
     try {
         const { id } = req.params;
         const userService = new UserService({ id: id });
@@ -46,10 +46,16 @@ route.post('/login', passport.authenticate('local', { session: false }), async (
     console.log('err', err);
 })
 
-route.post('/authorize/region/:id', async (req, res) => {
+route.post('/authorize/region',passport.authenticate('authenticate', { session: false }), async (req, res) => {
     try {
+        console.log('req.user', req.user);
         const { params, body } = req;
-        const { id } = params;
+        let id;
+        if(req.user){
+            const {user} = req.user;
+            if(user)
+            id = user;
+        }
         const userService = await UserService.checkUser(id);
         const { region } = body;
         if (!region) {
@@ -86,10 +92,16 @@ route.get('/authorize/redirect', passport.authenticate('region-authorization', {
     }
 })
 
-route.get('/marketplaces/:id/:region', async (req, res) => {
+route.get('/marketplaces/:region',passport.authenticate('authenticate', { session: false }), async (req, res) => {
     try {
         const { params } = req;
-        const { id, region } = params;
+        let id;
+        if(req.user){
+            const {user} = req.user;
+            if(user)
+            id = user;
+        }
+        const {region } = params;
         const userService = await UserService.checkUser(id);
         if(!region){
             return res.status(BadRequestError.status).send(new BadRequestError({message : `region is not define`}));
