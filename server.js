@@ -26,11 +26,15 @@ app.use(function (req, res, next) {
 app.use(require("./src/util/passport").initialize());
 
 app.use("/api/user", require("./src/controller/user.controller"));
-app.use("/api/aws",require("./src/controller/aws.controller"));
+app.use("/api/aws", require("./src/controller/aws.controller"));
+app.use("/api/order",require("./src/controller/order.controller"));
 
 // app.use(passport.session());
 
 app.listen(process.env.PORT, () => {
     console.log(`server running at port ${process.env.PORT}`);
+    let url = new URL("https://www.google.com/get?a='i'&b='d'");
+    const moment = require("moment");
+    console.log(moment().format("YYYYMMDD"))
 })
 require("./src/config/db.config");

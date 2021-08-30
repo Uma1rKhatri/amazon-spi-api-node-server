@@ -5,6 +5,8 @@ const awssdk = require("aws-sdk");
 const { ForbiddenError, InternalServerError, BadRequestError } = require('../util/error');
 const RequestService = require("./request.service");
 const { SPAPIENDPOINT } = require("../constant/index");
+const { GRANTTYPE } = require("../enum/index");
+
 
 class AWSService {
 
@@ -30,12 +32,11 @@ class AWSService {
         AWS.POLICY_ARN
       )
     ) {
-      throw new ForbiddenError({ message: "you must define aws access key, secret key, policy & role arn values" }
+      throw new ForbiddenError({ message: "you must define aws access key, secret key, policy & role arn values in env file" }
       );
     }
     if (
       !(
-        LWA.GRANT_TYPE &&
         LWA.CLIENT_ID &&
         LWA.CLIENT_SECRET
       )
@@ -50,7 +51,7 @@ class AWSService {
       method: "POST",
       url: SPAPIENDPOINT.LWA,
       body: {
-        grant_type: LWA.GRANT_TYPE.REFRESH_TOKEN,
+        grant_type: GRANTTYPE.REFRESH_TOKEN,
         client_id: LWA.CLIENT_ID,
         client_secret: LWA.CLIENT_SECRET,
         refresh_token: this.#refreshToken,
@@ -74,7 +75,7 @@ class AWSService {
       method: "POST",
       url: SPAPIENDPOINT.LWA,
       body: {
-        grant_type: LWA.GRANT_TYPE.AUTHORIZATION_CODE,
+        grant_type: GRANTTYPE.AUTHORIZATION_CODE,
         code: this.#authorizationCode,
         client_id: LWA.CLIENT_ID,
         client_secret: LWA.CLIENT_SECRET,
@@ -122,6 +123,8 @@ class AWSService {
     console.log('clientCredential',this.clientCredential);
     return this.clientCredential;
   }
+
+  
 }
 
 module.exports = AWSService;
