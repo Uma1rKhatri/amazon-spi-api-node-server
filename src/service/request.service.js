@@ -1,8 +1,9 @@
 "use strict";
 const request = require('request');
 const { ForbiddenError, InternalServerError } = require('../util/error');
-const {Request} = require("node-fetch");
+const { Request } = require("node-fetch");
 const fetch = require("node-fetch");
+const moment = require("moment");
 
 
 class RequestService {
@@ -47,13 +48,17 @@ class RequestService {
                 }
             }
         }
-        console.log('body',this.#body);
+        console.log('body', this.#body);
+        console.log('option', option);
 
         return new Promise((resolve, reject) => {
             request(option, (error, response, body) => {
                 if (error) {
+                    console.error("request error", error);
                     reject(new InternalServerError({ message: 'send http request error', data: error }));
                 } else {
+                    // console.log("response",response);
+                    console.log("body", body);
                     resolve(body);
                 }
 

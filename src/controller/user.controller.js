@@ -84,7 +84,6 @@ route.get('/authorize/redirect', passport.authenticate('region-authorization', {
         console.log('err',err);
         res.status(err.status ? err.status : InternalServerError.status).send(err);
     }
-
 })
 
 module.exports = route;
