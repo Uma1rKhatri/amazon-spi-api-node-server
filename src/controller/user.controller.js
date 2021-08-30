@@ -1,5 +1,5 @@
 const express = require("express");
-const route = express.Router({strict : true});
+const route = express.Router({ strict: true });
 const UserService = require("../service/user.service");
 const { InternalServerError, BadRequestError } = require("../util/error");
 const { OKSuccess, CreatedSuccess } = require("../util/success");
@@ -52,8 +52,8 @@ route.post('/authorize/region/:id', async (req, res) => {
         const { id } = params;
         const userService = await UserService.checkUser(id);
         const { region } = body;
-        if(!region){
-            throw new BadRequestError({message : `region is not define`});
+        if (!region) {
+            throw new BadRequestError({ message: `region is not define` });
         }
         await userService.authorizeRegion(region);
         res.status(OKSuccess.status).send(new OKSuccess({
@@ -63,7 +63,7 @@ route.post('/authorize/region/:id', async (req, res) => {
         }));
     }
     catch (err) {
-        console.log('err',err);
+        console.log('err', err);
         res.status(err.status ? err.status : InternalServerError.status).send(err);
     }
 })
@@ -71,8 +71,8 @@ route.post('/authorize/region/:id', async (req, res) => {
 route.get('/authorize/redirect', passport.authenticate('region-authorization', { session: false }), async (req, res) => {
     try {
         const { query } = req;
-        console.log('req.user',req.user);
-        if (req.user){
+        console.log('req.user', req.user);
+        if (req.user) {
             var { user, region } = req.user;
         }
         const userService = await UserService.checkUser(user);
@@ -81,7 +81,37 @@ route.get('/authorize/redirect', passport.authenticate('region-authorization', {
         res.redirect(`https://advisell-ui.netlify.app/auth/sign-in`);
     }
     catch (err) {
-        console.log('err',err);
+        console.log('err', err);
+        res.status(err.status ? err.status : InternalServerError.status).send(err);
+    }
+})
+
+route.get('/marketplaces/:id/:region', async (req, res) => {
+    try {
+        const { params } = req;
+        const { id, region } = params;
+        const userService = await UserService.checkUser(id);
+        if(!region){
+            return res.status(BadRequestError.status).send(new BadRequestError({message : `region is not define`}));
+        }
+        const regionExist = userService.isRegionExist(region);
+        if (!regionExist) {
+            return res.status(BadRequestError.status).send(new BadRequestError({ message: `region ${region} doesn't exist` }));
+        }
+        if(!(regionExist["isAuthorized"] && regionExist["refreshToken"])){
+            return res.status(BadRequestError.status).send(new BadRequestError({ message: `region ${region} is not authorized by user` }));
+        }
+        const response = await userService.getMarketplaceParticipations({region : regionExist["region"], refreshToken : regionExist["refreshToken"]});
+        const {payload} = response;
+        const data = {
+            marketplaces : userService.filterMarketplaces(payload)
+        };
+        res.status(OKSuccess.status).send(new OKSuccess({
+            data : data
+        }));
+
+    } catch (err) {
+        console.log('err', err);
         res.status(err.status ? err.status : InternalServerError.status).send(err);
     }
 })

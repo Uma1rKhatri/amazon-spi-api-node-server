@@ -59,12 +59,27 @@ class RequestService {
                 } else {
                     // console.log("response",response);
                     console.log("body", body);
-                    resolve(body);
+                    if(this.isJsonParsable(body)){
+                        resolve(JSON.parse(body));
+                    }else{
+                        resolve(body);
+                    }
                 }
 
             })
         })
 
+    }
+
+    isJsonParsable(string) {
+        try{
+            JSON.parse(string);
+        }
+        catch(e){
+            console.error('e',e);
+            return false;
+        }
+        return true;
     }
 
 }

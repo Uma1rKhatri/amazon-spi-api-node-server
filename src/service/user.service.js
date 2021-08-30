@@ -2,8 +2,9 @@
 
 const UserModel = require("../model/user.model");
 const { NotFoundError, ConflictError, BadRequestError, ForbiddenError } = require("../util/error");
-const { REGION } = require("../enum/index");
+const { REGION, SPAPIURI } = require("../enum/index");
 const AWSService = require("../service/aws.service");
+const SPAPIService = require("../service/sp-api-service");
 
 class UserService {
     #id;
@@ -73,13 +74,13 @@ class UserService {
     }
 
     async authorizeRegion(region) {
-        if(!Object.values(REGION).includes(region)){
-            throw new BadRequestError({message : `region value is incorrect`});
+        if (!Object.values(REGION).includes(region)) {
+            throw new BadRequestError({ message: `region value is incorrect` });
         }
         if (this.isRegionExist(region)) {
             throw new BadRequestError({ message: `region ${region} already authorized for user ${this.#user.id}` });
         }
-        this.#user.authorization = [...this.#user.authorization,{region : region}];
+        this.#user.authorization = [...this.#user.authorization, { region: region }];
         return this.#user.save();
     }
 
@@ -127,7 +128,37 @@ class UserService {
         const awsService = new AWSService({ authorizationCode: spapi_oauth_code });
         const { refresh_token } = await awsService.loginWithAmazonRefreshToken();
         regionExist["refreshToken"] = refresh_token;
+        const response = await this.getMarketplaceParticipations({ refreshToken: regionExist["refreshToken"], region: region });
+        const { payload } = response;
+        if (payload) {
+            regionExist["marketplaces"] = this.filterMarketplaces(payload);
+        }
         return this.#user.save();
+    }
+
+    async getMarketplaceParticipations({ refreshToken, region }) {
+        const host = SPAPIURI[region];
+        const spApiService = new SPAPIService({
+            refreshToken: refreshToken,
+            region: region
+        });
+        return spApiService.callAPI({
+            method: "GET",
+            endpoint: "/sellers/v1/marketplaceParticipations",
+            headers: {
+                "content-type": "application/json"
+            }
+        })
+    }
+
+    filterMarketplaces(payload) {
+        let marketplaces = [];
+        if (payload && payload.length > 0) {
+            marketplaces = payload.map((marketplace) => {
+                return marketplace["marketplace"]["id"];
+            })
+        }
+        return marketplaces;
     }
 }
 

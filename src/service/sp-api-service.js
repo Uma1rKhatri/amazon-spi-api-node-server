@@ -23,7 +23,6 @@ class SPAPIService {
             throw new ForbiddenError({ message: "user refreshToken value is missing" });
         }
         this.#awsService = new AWSService({ refreshToken: refreshToken });
-
     }
 
 
@@ -61,7 +60,7 @@ class SPAPIService {
             var searchParams = new URLSearchParams();
             for (let key in query) {
                 // console.log("key query[key]", key, query[key]);
-                searchParams.append(key, query[key]);
+                searchParams.append(encodeURI(key), encodeURI(query[key]));
             }
             url.search = searchParams.toString();
         }
@@ -103,11 +102,8 @@ class SPAPIService {
             headers: _headers
         });
 
-        const res = await requestService.sendHTTPRequest();
-        console.log('res', res);
+        return requestService.sendHTTPRequest();
 
-        // const result = await fetch(request);
-        // console.log("result",result);
     }
 }
 

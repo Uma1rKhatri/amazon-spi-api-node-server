@@ -28,7 +28,7 @@ route.get("/:id/:region", async (req, res) => {
         });
         const response = await spApiService.callAPI({
             method: "GET",
-            endpoint: "/orders/v0/orders",
+            endpoint: "/fba/inventory/v1/summaries",
             // path: {
             //     orderId : "114-6408901-7137035"
             // },
