@@ -5,6 +5,7 @@ const { NotFoundError, ConflictError, BadRequestError, ForbiddenError } = requir
 const { REGION, SPAPIURI } = require("../enum/index");
 const AWSService = require("../service/aws.service");
 const SPAPIService = require("../service/sp-api-service");
+const {LWA} = require("../config/aws.config");
 
 class UserService {
     #id;
@@ -95,15 +96,15 @@ class UserService {
         let redirectURL;
         switch (region) {
             case REGION.NORTH_AMERICA: {
-                redirectURL = `https://sellercentral.amazon.com/apps/authorize/consent?application_id=amzn1.sellerapps.app.b46c0843-2b1b-48b8-99f6-2aa713bba376&state=${token}&version=beta`;
+                redirectURL = `https://sellercentral.amazon.com/apps/authorize/consent?application_id=${LWA.CLIENT_ID}&state=${token}&version=beta`;
                 break;
             }
             case REGION.EUROPE: {
-                redirectURL = `https://sellercentral-europe.amazon.com/apps/authorize/consent?application_id=amzn1.application-oa2-client.2c26482ec53e40eeaf8102b201018cf1&state=${token}&version=beta`;
+                redirectURL = `https://sellercentral-europe.amazon.com/apps/authorize/consent?application_id=${LWA.CLIENT_ID}&state=${token}&version=beta`;
                 break;
             }
             case REGION.FAR_EAST: {
-                redirectURL = `https://sellercentral.amazon.com.au/apps/authorize/consent?application_id=amzn1.application-oa2-client.2c26482ec53e40eeaf8102b201018cf1&state=${token}&version=beta`;
+                redirectURL = `https://sellercentral.amazon.com.au/apps/authorize/consent?application_id=${LWA.CLIENT_ID}&state=${token}&version=beta`;
                 break;
             }
             default: {

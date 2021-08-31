@@ -4,6 +4,7 @@ const UserService = require("../service/user.service");
 const { InternalServerError, BadRequestError } = require("../util/error");
 const { OKSuccess, CreatedSuccess } = require("../util/success");
 const passport = require("passport");
+const {LWA} = require("../config/aws.config");
 
 route.post("/", async (req, res) => {
     try {
@@ -84,7 +85,7 @@ route.get('/authorize/redirect', passport.authenticate('region-authorization', {
         const userService = await UserService.checkUser(user);
         await userService.setOAuthCredential(query, region);
         // on successfully saving the OAuth credentials you can redirect to your application
-        res.redirect(`https://advisell-ui.netlify.app/auth/sign-in`);
+        res.redirect(LWA.REDIRECT_URL);
     }
     catch (err) {
         console.log('err', err);

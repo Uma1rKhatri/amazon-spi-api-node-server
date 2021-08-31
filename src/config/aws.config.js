@@ -5,7 +5,8 @@ const LWA = Object.freeze({
     },
     'CLIENT_ID': process.env.CLIENT_ID,
     'CLIENT_SECRET': process.env.CLIENT_SECRET,
-    'REFRESH_TOKEN': process.env.REFRESH_TOKEN
+    'REFRESH_TOKEN': process.env.REFRESH_TOKEN,
+    'REDIRECT_URL' : process.env.REDIRECT_URL
 })
 const AWS = Object.freeze({
     'ACCESS_KEY': process.env.ACCESS_KEY,
