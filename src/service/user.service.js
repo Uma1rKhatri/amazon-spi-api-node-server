@@ -5,7 +5,7 @@ const { NotFoundError, ConflictError, BadRequestError, ForbiddenError } = requir
 const { REGION, SPAPIURI } = require("../enum/index");
 const AWSService = require("../service/aws.service");
 const SPAPIService = require("../service/sp-api-service");
-const {LWA} = require("../config/aws.config");
+const { LWA } = require("../config/aws.config");
 
 class UserService {
     #id;
@@ -44,7 +44,7 @@ class UserService {
                     email: this.#email
                 }
             ]
-        });
+        }, { password: 0, passwordUpdatedAt: 0, isDelete : 0, status : 0 });
         return user;
     }
 
@@ -64,7 +64,9 @@ class UserService {
 
     async login(payload) {
         const { password } = payload;
-        this.#user = await this.getUser();
+        this.#user = await UserModel.findOne({
+            email: this.#email
+        });
         if (!this.#user) {
             throw new BadRequestError({ message: `The email address ${this.#email} is not associated with any account.` });
         }
@@ -156,7 +158,7 @@ class UserService {
         let marketplaces = [];
         if (payload && payload.length > 0) {
             marketplaces = payload.map((marketplace) => {
-                return marketplace["marketplace"]["id"];
+                return marketplace["marketplace"];
             })
         }
         return marketplaces;
