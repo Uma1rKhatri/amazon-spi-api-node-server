@@ -88,6 +88,9 @@ schema.methods.setPassword = function (password) {
 }
 
 schema.methods.verifyPassword = function (password) {
+    console.log("password",password);
+    console.log("this.password",this.password);
+
     if (this.password && password) {
         const isMatch = bcrypt.compareSync(password, this.password);
         return isMatch;

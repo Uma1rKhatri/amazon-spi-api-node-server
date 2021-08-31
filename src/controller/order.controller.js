@@ -17,7 +17,7 @@ route.get("/:region", passport.authenticate('authenticate', { session: false }),
                 id = user;
         }
         const { region } = params;
-        // const {MarketplaceIds, CreatedAfter} = query;
+        const {MarketplaceIds} = query;
         const userService = await UserService.checkUser(id);
         if (!region) {
             return res.status(BadRequestError.status).send(new BadRequestError({ message: `region is not define` }));
@@ -28,6 +28,15 @@ route.get("/:region", passport.authenticate('authenticate', { session: false }),
         }
         if (!(regionExist["isAuthorized"] && regionExist["refreshToken"])) {
             return res.status(BadRequestError.status).send(new BadRequestError({ message: `region ${region} is not authorized by user` }));
+        }
+        if(!MarketplaceIds){
+            let marketpalces = regionExist["marketplaces"];
+            if(marketpalces && marketpalces.length > 0){
+                let filterMarketplace = marketpalces.map((marketplace) => {
+                    return marketplace["id"];
+                })
+                query["MarketplaceIds"] = filterMarketplace.join(",");
+            }
         }
         const spApiService = new SPAPIService({
             refreshToken: regionExist["refreshToken"],
