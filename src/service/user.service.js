@@ -127,6 +127,7 @@ class UserService {
             state: state,
             sellingPartnerId: selling_partner_id
         };
+        console.log("regionExist['credential']",regionExist["credential"])
         regionExist["isAuthorized"] = true;
         const awsService = new AWSService({ authorizationCode: spapi_oauth_code });
         const { refresh_token } = await awsService.loginWithAmazonRefreshToken();

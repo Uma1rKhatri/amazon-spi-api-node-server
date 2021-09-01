@@ -78,6 +78,8 @@ route.post('/authorize/region',passport.authenticate('authenticate', { session: 
 route.get('/authorize/redirect', passport.authenticate('region-authorization', { session: false }), async (req, res) => {
     try {
         const { query } = req;
+        console.log('query', query);
+
         console.log('req.user', req.user);
         if (req.user) {
             var { user, region } = req.user;

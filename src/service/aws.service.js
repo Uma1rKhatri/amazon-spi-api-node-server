@@ -85,6 +85,7 @@ class AWSService {
       },
     }).sendHTTPRequest();
     const result = response;
+    console.log("result loginWithAmazonRefreshToken",result);
     const {refresh_token} = result;
     if (!refresh_token) {
       throw new BadRequestError({ message: `can't get refresh token`, data : result });
