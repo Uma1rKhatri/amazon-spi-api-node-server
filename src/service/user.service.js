@@ -98,15 +98,15 @@ class UserService {
         let redirectURL;
         switch (region) {
             case REGION.NORTH_AMERICA: {
-                redirectURL = `https://sellercentral.amazon.com/apps/authorize/consent?application_id=${LWA.CLIENT_ID}&state=${token}&version=beta`;
+                redirectURL = `https://sellercentral.amazon.com/apps/authorize/consent?application_id=${LWA.APP_ID}&state=${token}&version=beta`;
                 break;
             }
             case REGION.EUROPE: {
-                redirectURL = `https://sellercentral-europe.amazon.com/apps/authorize/consent?application_id=${LWA.CLIENT_ID}&state=${token}&version=beta`;
+                redirectURL = `https://sellercentral-europe.amazon.com/apps/authorize/consent?application_id=${LWA.APP_ID}&state=${token}&version=beta`;
                 break;
             }
             case REGION.FAR_EAST: {
-                redirectURL = `https://sellercentral.amazon.com.au/apps/authorize/consent?application_id=${LWA.CLIENT_ID}&state=${token}&version=beta`;
+                redirectURL = `https://sellercentral.amazon.com.au/apps/authorize/consent?application_id=${LWA.APP_ID}&state=${token}&version=beta`;
                 break;
             }
             default: {
