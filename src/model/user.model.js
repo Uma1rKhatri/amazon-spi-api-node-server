@@ -74,17 +74,19 @@ const schema = new mongoose.Schema({
     }
 }, schemaOptions);
 
-schema.pre('save', function (next) {
-    console.log('this user', this);
-    this.setPassword(this.password);
-    next();
-})
+// schema.pre('save', function (next) {
+//     console.log('this user', this);
+//     this.setPassword(this.password);
+//     next();
+// })
 
 schema.methods.setPassword = function (password) {
     const salt = bcrypt.genSaltSync(16);
     const hash = bcrypt.hashSync(password, salt);
     this.password = hash;
     this.passwordUpdatedAt = new Date();
+    this.setPassword(this.password);
+    this.save();
 }
 
 schema.methods.verifyPassword = function (password) {
