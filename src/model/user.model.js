@@ -85,8 +85,6 @@ schema.methods.setPassword = function (password) {
     const hash = bcrypt.hashSync(password, salt);
     this.password = hash;
     this.passwordUpdatedAt = new Date();
-    this.setPassword(this.password);
-    this.save();
 }
 
 schema.methods.verifyPassword = function (password) {

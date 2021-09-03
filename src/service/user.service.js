@@ -53,12 +53,13 @@ class UserService {
     }
 
     async registration(payload) {
-        const { email } = payload;
+        const { email, password } = payload;
         const isEmailExist = await this.#isEmailExist(email);
         if (isEmailExist) {
             throw new ConflictError({ message: `email already exist by ${email}` })
         }
         const user = new UserModel(payload);
+        user.setPassword(password);
         return user.save();
     }
 
