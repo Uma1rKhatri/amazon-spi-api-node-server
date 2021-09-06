@@ -4,7 +4,7 @@ const UserService = require("../service/user.service");
 const { InternalServerError, BadRequestError } = require("../util/error");
 const { OKSuccess, CreatedSuccess } = require("../util/success");
 const passport = require("passport");
-const {LWA} = require("../config/aws.config");
+const { LWA } = require("../config/aws.config");
 
 route.post("/", async (req, res) => {
     try {
@@ -21,7 +21,7 @@ route.post("/", async (req, res) => {
     }
 })
 
-route.get("/:id",passport.authenticate('authenticate', { session: false }), async (req, res) => {
+route.get("/:id", passport.authenticate('authenticate', { session: false }), async (req, res) => {
     try {
         const { id } = req.params;
         const userService = new UserService({ id: id });
@@ -37,7 +37,11 @@ route.get("/:id",passport.authenticate('authenticate', { session: false }), asyn
 route.post('/login', passport.authenticate('local', { session: false }), async (req, res) => {
     const { body } = req;
     const { email, password } = body;
+    console.log('req.info', req.authInfo);
     console.log('req.user', req.user);
+    const { error } = req.authInfo;
+    if (error)
+        return res.status(error.status).send(error);
     res.status(OKSuccess.status).send(new OKSuccess({
         data: {
             jwt: req.user.createLoginJWT()
@@ -47,15 +51,15 @@ route.post('/login', passport.authenticate('local', { session: false }), async (
     console.log('err', err);
 })
 
-route.post('/authorize/region',passport.authenticate('authenticate', { session: false }), async (req, res) => {
+route.post('/authorize/region', passport.authenticate('authenticate', { session: false }), async (req, res) => {
     try {
         console.log('req.user', req.user);
         const { params, body } = req;
         let id;
-        if(req.user){
-            const {user} = req.user;
-            if(user)
-            id = user;
+        if (req.user) {
+            const { user } = req.user;
+            if (user)
+                id = user;
         }
         const userService = await UserService.checkUser(id);
         const { region } = body;
@@ -79,8 +83,10 @@ route.get('/authorize/redirect', passport.authenticate('region-authorization', {
     try {
         const { query } = req;
         console.log('query', query);
-
         console.log('req.user', req.user);
+        const { error } = req.authInfo;
+        if (error)
+            return res.status(error.status).send(error);
         if (req.user) {
             var { user, region } = req.user;
         }
@@ -95,34 +101,34 @@ route.get('/authorize/redirect', passport.authenticate('region-authorization', {
     }
 })
 
-route.get('/marketplaces/:region',passport.authenticate('authenticate', { session: false }), async (req, res) => {
+route.get('/marketplaces/:region', passport.authenticate('authenticate', { session: false }), async (req, res) => {
     try {
         const { params } = req;
         let id;
-        if(req.user){
-            const {user} = req.user;
-            if(user)
-            id = user;
+        if (req.user) {
+            const { user } = req.user;
+            if (user)
+                id = user;
         }
-        const {region } = params;
+        const { region } = params;
         const userService = await UserService.checkUser(id);
-        if(!region){
-            return res.status(BadRequestError.status).send(new BadRequestError({message : `region is not define`}));
+        if (!region) {
+            return res.status(BadRequestError.status).send(new BadRequestError({ message: `region is not define` }));
         }
         const regionExist = userService.isRegionExist(region);
         if (!regionExist) {
             return res.status(BadRequestError.status).send(new BadRequestError({ message: `region ${region} doesn't exist` }));
         }
-        if(!(regionExist["isAuthorized"] && regionExist["refreshToken"])){
+        if (!(regionExist["isAuthorized"] && regionExist["refreshToken"])) {
             return res.status(BadRequestError.status).send(new BadRequestError({ message: `region ${region} is not authorized by user` }));
         }
-        const response = await userService.getMarketplaceParticipations({region : regionExist["region"], refreshToken : regionExist["refreshToken"]});
-        const {payload} = response;
+        const response = await userService.getMarketplaceParticipations({ region: regionExist["region"], refreshToken: regionExist["refreshToken"] });
+        const { payload } = response;
         const data = {
-            marketplaces : userService.filterMarketplaces(payload)
+            marketplaces: userService.filterMarketplaces(payload)
         };
         res.status(OKSuccess.status).send(new OKSuccess({
-            data : data
+            data: data
         }));
 
     } catch (err) {
